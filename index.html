@@ -28,20 +28,23 @@
       <form id="unlockForm">
         <input id="pinInput" type="password" autocomplete="current-password" placeholder="PIN / পাসওয়ার্ড" required>
         <button class="primary" type="submit">আনলক</button>
-        <div style="margin-top: 14px;">
-          <button id="resetPinBtn" type="button" style="background:none; border:none; color:#176b52; cursor:pointer; font-size:13px; text-decoration:underline; font-weight:600;">
-            PIN ভুলে গেছেন? (লক রিসেট করুন)
+        <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+          <button id="resetPinBtn" type="button" class="secondary" style="width: 100%; border: 1px dashed #176b52; background: #eef7f3; cursor: pointer; padding: 10px; font-weight: 600;">
+            🔓 PIN রিসেট করে সরাসরি প্রবেশ করুন
           </button>
         </div>
       </form>
 
       <div id="setupArea" hidden>
-        <p>প্রথমবার ব্যবহারের জন্য একটি PIN/পাসওয়ার্ড তৈরি করুন (কমপক্ষে ৪ অক্ষর/সংখ্যা)।</p>
+        <p>প্রথমবার ব্যবহারের জন্য একটি PIN তৈরি করতে পারেন (ঐচ্ছিক)।</p>
         <form id="setupForm">
           <input id="newPin" type="password" autocomplete="new-password" placeholder="নতুন PIN / পাসওয়ার্ড" minlength="4" required>
           <input id="confirmPin" type="password" autocomplete="new-password" placeholder="আবার লিখুন" minlength="4" required>
           <button class="primary" type="submit">PIN সেট করুন</button>
         </form>
+        <button id="bypassPinBtn" type="button" class="secondary" style="width: 100%; margin-top: 10px;">
+          পাসওয়ার্ড ছাড়া সরাসরি ব্যবহার করুন
+        </button>
       </div>
 
       <p id="lockError" class="error" role="alert"></p>
