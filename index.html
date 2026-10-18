@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#176b52">
+  <title>জমা-খরচ • ব্যক্তিগত হিসাব ও রিপোর্ট</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div>
+      <h1>জমা-খরচ</h1>
+      <p>আপনার ব্যক্তিগত হিসাব ও Date-to-Date রিপোর্ট</p>
+    </div>
+    <div class="header-actions">
+      <button id="lockNow" class="headbtn" title="অ্যাপ লক করুন">🔒 লক</button>
+    </div>
+  </header>
+
+  <!-- Lock Screen Overlay -->
+  <section id="lockScreen" class="lockScreen">
+    <div class="lockCard">
+      <div class="lockIcon">🔐</div>
+      <h2 id="lockTitle">জমা-খরচ আনলক করুন</h2>
+      <p id="lockText">আপনার PIN/পাসওয়ার্ড লিখুন</p>
+      
+      <form id="unlockForm">
+        <input id="pinInput" type="password" autocomplete="current-password" placeholder="PIN / পাসওয়ার্ড" required>
+        <button class="primary" type="submit">আনলক</button>
+        <div style="margin-top: 14px;">
+          <button id="resetPinBtn" type="button" style="background:none; border:none; color:#176b52; cursor:pointer; font-size:13px; text-decoration:underline; font-weight:600;">
+            PIN ভুলে গেছেন? (লক রিসেট করুন)
+          </button>
+        </div>
+      </form>
+
+      <div id="setupArea" hidden>
+        <p>প্রথমবার ব্যবহারের জন্য একটি PIN/পাসওয়ার্ড তৈরি করুন (কমপক্ষে ৪ অক্ষর/সংখ্যা)।</p>
+        <form id="setupForm">
+          <input id="newPin" type="password" autocomplete="new-password" placeholder="নতুন PIN / পাসওয়ার্ড" minlength="4" required>
+          <input id="confirmPin" type="password" autocomplete="new-password" placeholder="আবার লিখুন" minlength="4" required>
+          <button class="primary" type="submit">PIN সেট করুন</button>
+        </form>
+      </div>
+
+      <p id="lockError" class="error" role="alert"></p>
+    </div>
+  </section>
+
+  <!-- Main Application -->
+  <main id="app" hidden>
+    <!-- Lifetime Overall Summary -->
+    <section class="summary">
+      <div class="tile">
+        <span>মোট জমা</span>
+        <strong id="totalIncome" class="incomeText">₹০</strong>
+      </div>
+      <div class="tile">
+        <span>মোট খরচ</span>
+        <strong id="totalExpense" class="expenseText">₹০</strong>
+      </div>
+      <div class="tile balance">
+        <span>বর্তমান ব্যালেন্স (জমা − খরচ)</span>
+        <strong id="balance">₹০</strong>
+      </div>
+    </section>
+
+    <!-- New Entry Form -->
+    <section class="panel">
+      <h2 id="formTitle">নতুন হিসাব যোগ করুন</h2>
+      <form id="entryForm">
+        <input id="editId" type="hidden">
+        
+        <div class="typeRow">
+          <label class="radioLabel">
+            <input type="radio" name="type" value="income"> <span class="incomeTag">জমা (+)</span>
+          </label>
+          <label class="radioLabel">
+            <input type="radio" name="type" value="expense" checked> <span class="expenseTag">খরচ (−)</span>
+          </label>
+        </div>
+
+        <label>
+          টাকার পরিমাণ (₹ / ৳)
+          <input id="amount" type="number" min="0.01" step="0.01" placeholder="যেমন: 500" required>
+        </label>
+
+        <label>
+          বিবরণ
+          <input id="note" maxlength="100" placeholder="যেমন: বেতন, কাঁচাবাজার, বাড়িভাড়া" required>
+        </label>
+
+        <label>
+          ক্যাটাগরি
+          <select id="category">
+            <option value="বাজার">বাজার</option>
+            <option value="বেতন">বেতন</option>
+            <option value="ব্যবসা">ব্যবসা</option>
+            <option value="বাড়িভাড়া">বাড়িভাড়া</option>
+            <option value="যাতায়াত">যাতায়াত</option>
+            <option value="বিল">বিল</option>
+            <option value="চিকিৎসা">চিকিৎসা</option>
+            <option value="শিক্ষা">শিক্ষা</option>
+            <option value="সঞ্চয়">সঞ্চয়</option>
+            <option value="জমা/সঞ্চয়">জমা/সঞ্চয়</option>
+            <option value="ঋণ">ঋণ</option>
+            <option value="উপহার">উপহার</option>
+            <option value="বিনোদন">বিনোদন</option>
+            <option value="অন্যান্য">অন্যান্য</option>
+          </select>
+        </label>
+
+        <div class="formGrid2">
+          <label>
+            তারিখ
+            <input id="date" type="date" required>
+          </label>
+          <label>
+            পেমেন্ট মাধ্যম
+            <select id="paymentMethod">
+              <option value="নগদ">নগদ</option>
+              <option value="ব্যাংক">ব্যাংক</option>
+              <option value="বিকাশ">বিকাশ</option>
+              <option value="নগদ (Nagad)">নগদ (Nagad)</option>
+              <option value="কার্ড">কার্ড</option>
+              <option value="অন্যান্য">অন্যান্য</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="formBtns">
+          <button class="primary" type="submit" id="saveBtn">হিসাব সেভ করুন</button>
+          <button class="secondary" type="button" id="cancelEdit" hidden>বাতিল</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- NEW & POWERFUL DATE TO DATE REPORT SECTION -->
+    <section class="panel reportPanel">
+      <div class="reportTitleRow">
+        <h2>📅 Date to Date ও ক্যাটাগরি রিপোর্ট</h2>
+        <span class="badge">উন্নত বিশ্লেষণ</span>
+      </div>
+      <p class="sectionSub">নির্দিষ্ট তারিখ সীমা, ধরন ও ক্যাটাগরি নির্বাচন করে নির্ভুল হিসাব দেখুন</p>
+
+      <!-- Date Presets -->
+      <div class="presetButtons">
+        <button type="button" class="presetBtn" data-preset="today">আজ</button>
+        <button type="button" class="presetBtn" data-preset="yesterday">গতকাল</button>
+        <button type="button" class="presetBtn" data-preset="this_week">এই সপ্তাহ</button>
+        <button type="button" class="presetBtn active" data-preset="this_month">এই মাস</button>
+        <button type="button" class="presetBtn" data-preset="last_month">গত মাস</button>
+        <button type="button" class="presetBtn" data-preset="this_year">এই বছর</button>
+        <button type="button" class="presetBtn" data-preset="all">সব সময়</button>
+      </div>
+
+      <!-- Date to Date Range Pickers -->
+      <div class="dateRangeRow">
+        <label>
+          শুরুর তারিখ (From Date)
+          <input id="reportStartDate" type="date">
+        </label>
+        <label>
+          শেষের তারিখ (To Date)
+          <input id="reportEndDate" type="date">
+        </label>
+      </div>
+
+      <!-- Type and Category Filters for Report -->
+      <div class="reportFilterRow">
+        <label>
+          হিসাবের ধরন
+          <select id="reportFilterType">
+            <option value="all">সব ধরন (জমা ও খরচ)</option>
+            <option value="income">শুধু জমা (+)</option>
+            <option value="expense">শুধু খরচ (−)</option>
+          </select>
+        </label>
+        <label>
+          ক্যাটাগরি
+          <select id="reportFilterCategory">
+            <option value="all">সব ক্যাটাগরি</option>
+            <option value="বাজার">বাজার</option>
+            <option value="বেতন">বেতন</option>
+            <option value="ব্যবসা">ব্যবসা</option>
+            <option value="বাড়িভাড়া">বাড়িভাড়া</option>
+            <option value="যাতায়াত">যাতায়াত</option>
+            <option value="বিল">বিল</option>
+            <option value="চিকিৎসা">চিকিৎসা</option>
+            <option value="শিক্ষা">শিক্ষা</option>
+            <option value="সঞ্চয়">সঞ্চয়</option>
+            <option value="জমা/সঞ্চয়">জমা/সঞ্চয়</option>
+            <option value="ঋণ">ঋণ</option>
+            <option value="উপহার">উপহার</option>
+            <option value="বিনোদন">বিনোদন</option>
+            <option value="অন্যান্য">অন্যান্য</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- Report Summary Grid -->
+      <div class="reportGrid">
+        <div class="reportStat">
+          <span>রিপোর্টে মোট জমা</span>
+          <strong id="reportIncome" class="incomeText">₹০</strong>
+        </div>
+        <div class="reportStat">
+          <span>রিপোর্টে মোট খরচ</span>
+          <strong id="reportExpense" class="expenseText">₹০</strong>
+        </div>
+        <div class="reportStat highlight">
+          <span>নিট (জমা − খরচ)</span>
+          <strong id="reportNet">₹০</strong>
+        </div>
+        <div class="reportStat">
+          <span>লেনদেন সংখ্যা</span>
+          <strong id="reportCount">০টি</strong>
+        </div>
+      </div>
+
+      <!-- Visual Category Breakdown with Progress Bars -->
+      <div class="categoryBreakdownSection" id="categoryBreakdownWrapper">
+        <h3>📊 ক্যাটাগরি অনুযায়ী বিশ্লেষণ</h3>
+        <div id="categoryBars" class="categoryBars"></div>
+      </div>
+
+      <div class="reportActionButtons">
+        <button id="exportReportCsv" class="secondary full">📥 এই রিপোর্ট CSV ডাউনলোড</button>
+      </div>
+    </section>
+
+    <!-- Transactions List & Search -->
+    <section class="panel">
+      <div class="listHead">
+        <h2>হিসাবের তালিকা</h2>
+        <button id="exportAllCsv" class="secondary">সব হিসাব CSV</button>
+      </div>
+
+      <input id="search" class="search" placeholder="🔍 বিবরণ, ক্যাটাগরি বা তারিখ দিয়ে খুঁজুন…">
+
+      <div class="entriesList" id="entries"></div>
+      <p id="empty" class="empty" hidden>কোনো হিসাব পাওয়া যায়নি।</p>
+    </section>
+
+    <!-- Security & Settings Panel -->
+    <section class="panel security">
+      <h2>⚙️ সেটিংস ও নিরাপত্তা</h2>
+      <p>মুদ্রা পরিবর্তন ও PIN নিরাপত্তা ব্যবস্থাপনা করুন।</p>
+      
+      <div class="settingsRow">
+        <label>
+          মুদ্রা প্রতীক (Currency)
+          <select id="currencySelect">
+            <option value="₹">₹ রুপি (INR)</option>
+            <option value="৳">৳ টাকা (BDT)</option>
+            <option value="$">$ ডলার (USD)</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="settingsButtons">
+        <button id="changePin" class="secondary">PIN পরিবর্তন</button>
+        <button id="removePin" class="secondary text-danger">PIN নিষ্ক্রিয় করুন</button>
+      </div>
+    </section>
+
+    <p class="notice">
+      🔒 ডেটা সম্পূর্ণভাবে আপনার এই ডিভাইসের ব্রাউজারে সেভ থাকে। ব্রাউজার ক্যাশ সাফ করার আগে নিয়মিত CSV ব্যাকআপ রাখুন।
+    </p>
+  </main>
+
+  <footer>জমা-খরচ • ব্যক্তিগত হিসাব ও Date-to-Date রিপোর্ট</footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
